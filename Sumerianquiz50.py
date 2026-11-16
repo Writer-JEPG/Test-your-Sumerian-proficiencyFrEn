@@ -43,8 +43,8 @@ LANGUAGES = {
         "incomplete": "You have not answered all the questions. Unanswered questions will be counted as incorrect."
     },
     "Français": {
-        "title": "📜 Testez vos connaissances sur les Sumériens",
-        "subtitle": "Un quiz de 50 questions sur l’histoire, la langue, l’écriture, la religion et la culture sumériennes.",
+        "title": "📜 Testez vos connaissances sur les cultures, les langues et l'industrie textile de la Mésopotamie antique",
+        "subtitle": "Ce quiz est conçu pour tester vos connaissances sur les cultures, les langues et l'industrie textile de la Mésopotamie antique. Il a été créé par Rami Ibrahim, linguiste et fondateur du Musée de l'archéologie et de l'artisanat des textiles.",
         "choose_language": "Choisissez votre langue",
         "instructions": "Sélectionnez une réponse pour chaque question, puis cliquez sur **Soumettre mes réponses**.",
         "submit": "Soumettre mes réponses",
