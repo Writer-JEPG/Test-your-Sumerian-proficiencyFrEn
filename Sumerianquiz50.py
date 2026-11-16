@@ -19,9 +19,7 @@ st.set_page_config(
 LANGUAGES = {
     "English": {
         "title": "📜 Test Your Sumerian Knowledge",
-        "subtitle": "This quiz intends to test your knowledge about Mesopotamian ancient cultures, languages, and the textile industry. This quiz was created by Rami Ibrahim, a linguist and the founder of the Museum of the Archaeology and Craftsmanship of Textiles.
-
-",
+        "subtitle": "This quiz intends to test your knowledge about Mesopotamian ancient cultures, languages, and the textile industry. This quiz was created by Rami Ibrahim, a linguist and the founder of the Museum of the Archaeology and Craftsmanship of Textiles.",
         "instructions": "Select one answer for each question, then click **Submit my answers**.",
         "submit": "Submit my answers",
         "score": "Your score",
