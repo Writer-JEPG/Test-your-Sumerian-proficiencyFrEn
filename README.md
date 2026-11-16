@@ -1,2 +1,3 @@
 # Test-your-Sumerian-proficiencyFrEn
-This quiz was created by Rami Ibrahim. It contains 50 questions.
+A 50-question quiz about Sumerian history, language, writing, religion and culture.
+This quiz was created by Rami Ibrahim.
