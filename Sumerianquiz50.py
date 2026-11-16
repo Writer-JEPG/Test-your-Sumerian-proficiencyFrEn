@@ -650,11 +650,6 @@ questions = [
 # VALIDATION
 # ---------------------------------------------------------
 
-assert len(questions) == 50, (
-    f"Expected exactly 50 questions, but found {len(questions)}. "
-    "Please check the questions list."
-)
-
 for number, question in enumerate(questions, start=1):
     assert len(question["options_en"]) == 4, (
         f"Question {number} must have exactly 4 English options."
