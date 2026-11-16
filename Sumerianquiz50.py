@@ -1,9 +1,14 @@
-
 import streamlit as st
 
+# ---------------------------------------------------------
+# Sumerian Knowledge Quiz
+# Created by Rami Ibrahim
+# 50 questions – English / French
+# ---------------------------------------------------------
+
 st.set_page_config(
-    page_title="Sumerian Knowledge Quiz",
-    page_icon="𒀭",
+    page_title="Test Your Sumerian Knowledge",
+    page_icon="📜",
     layout="wide"
 )
 
@@ -11,629 +16,633 @@ st.set_page_config(
 # LANGUAGE SETTINGS
 # ---------------------------------------------------------
 
-translations = {
+LANGUAGES = {
     "English": {
-        "title": "𒀭 Sumerian Knowledge Quiz",
-        "subtitle": "Test your knowledge of the Sumerian language, cuneiform writing and civilization.",
-        "language": "Select your language",
-        "instructions": "Answer the 50 questions below. Select one answer for each question, then submit your quiz.",
-        "question": "Question",
-        "submit": "Submit Quiz",
-        "score": "Your Score",
-        "excellent": "Excellent! You have an outstanding knowledge of Sumerian.",
-        "very_good": "Very good! You have a solid understanding of Sumerian.",
-        "good": "Good effort! Keep studying and improving your knowledge.",
-        "keep_learning": "Keep learning! There is much more to discover about Sumerian.",
-        "correct": "Correct answer",
+        "title": "📜 Test Your Sumerian Knowledge",
+        "subtitle": "A 50-question quiz about Sumerian history, language, writing, religion and culture.",
+        "choose_language": "Choose your language",
+        "instructions": "Select one answer for each question, then click **Submit my answers**.",
+        "submit": "Submit my answers",
+        "score": "Your score",
+        "out_of": "out of",
+        "excellent": "Excellent! You have a very strong knowledge of Sumerian civilisation.",
+        "good": "Very good! You have a good understanding of Sumerian civilisation.",
+        "average": "Good effort! There is still more to discover about Sumer.",
+        "beginner": "Keep learning! Sumerian civilisation has a fascinating history.",
+        "review": "Answer review",
         "your_answer": "Your answer",
+        "correct_answer": "Correct answer",
         "explanation": "Explanation",
-        "result": "Quiz Results",
-        "restart": "Restart Quiz",
         "not_answered": "Not answered",
-        "all_questions": "Total questions",
-        "percentage": "Percentage",
+        "restart": "Restart the quiz",
         "creator": "Created by Rami Ibrahim",
-        "sources": "Recommended academic resources",
-        "source_intro": "These resources can help you verify Sumerian words, signs and readings.",
-        "footer": "Sumerian language and cuneiform knowledge quiz"
+        "references": "Research references",
+        "references_note": "These resources are useful for further research into Sumerian language, cuneiform and Mesopotamian history.",
+        "question": "Question",
+        "select_answer": "Choose an answer",
+        "complete": "You have answered all 50 questions.",
+        "incomplete": "You have not answered all the questions. Unanswered questions will be counted as incorrect."
     },
     "Français": {
-        "title": "𒀭 Quiz de connaissances sur le sumérien",
-        "subtitle": "Testez vos connaissances de la langue sumérienne, de l’écriture cunéiforme et de la civilisation sumérienne.",
-        "language": "Choisissez votre langue",
-        "instructions": "Répondez aux 50 questions ci-dessous. Sélectionnez une réponse pour chaque question, puis soumettez votre quiz.",
-        "question": "Question",
-        "submit": "Soumettre le quiz",
+        "title": "📜 Testez vos connaissances sur les Sumériens",
+        "subtitle": "Un quiz de 50 questions sur l’histoire, la langue, l’écriture, la religion et la culture sumériennes.",
+        "choose_language": "Choisissez votre langue",
+        "instructions": "Sélectionnez une réponse pour chaque question, puis cliquez sur **Soumettre mes réponses**.",
+        "submit": "Soumettre mes réponses",
         "score": "Votre score",
-        "excellent": "Excellent ! Vous avez une connaissance remarquable du sumérien.",
-        "very_good": "Très bien ! Vous avez une bonne maîtrise des connaissances sur le sumérien.",
-        "good": "Bon travail ! Continuez à approfondir vos connaissances.",
-        "keep_learning": "Continuez à apprendre ! Il reste beaucoup à découvrir sur le sumérien.",
-        "correct": "Bonne réponse",
+        "out_of": "sur",
+        "excellent": "Excellent ! Vous possédez de très solides connaissances sur la civilisation sumérienne.",
+        "good": "Très bien ! Vous avez une bonne compréhension de la civilisation sumérienne.",
+        "average": "Bon travail ! Il vous reste encore beaucoup à découvrir sur Sumer.",
+        "beginner": "Continuez à apprendre ! La civilisation sumérienne possède une histoire fascinante.",
+        "review": "Correction des réponses",
         "your_answer": "Votre réponse",
+        "correct_answer": "Bonne réponse",
         "explanation": "Explication",
-        "result": "Résultats du quiz",
-        "restart": "Recommencer le quiz",
         "not_answered": "Sans réponse",
-        "all_questions": "Nombre total de questions",
-        "percentage": "Pourcentage",
+        "restart": "Recommencer le quiz",
         "creator": "Créé par Rami Ibrahim",
-        "sources": "Ressources académiques recommandées",
-        "source_intro": "Ces ressources permettent de vérifier les mots, les signes et les lectures du sumérien.",
-        "footer": "Quiz de connaissances sur la langue sumérienne et l’écriture cunéiforme"
+        "references": "Références scientifiques",
+        "references_note": "Ces ressources permettent d’approfondir les recherches sur la langue sumérienne, l’écriture cunéiforme et l’histoire mésopotamienne.",
+        "question": "Question",
+        "select_answer": "Choisissez une réponse",
+        "complete": "Vous avez répondu aux 50 questions.",
+        "incomplete": "Vous n’avez pas répondu à toutes les questions. Les questions sans réponse seront considérées comme incorrectes."
     }
 }
 
 # ---------------------------------------------------------
-# QUESTION BANK
-# Format:
-# (English question, French question,
-#  English options, French options,
-#  correct answer index,
-#  English explanation, French explanation)
+# QUESTION FORMAT
+# ---------------------------------------------------------
+
+def Q(en, fr, options_en, options_fr, answer, explanation_en, explanation_fr):
+    return {
+        "en": en,
+        "fr": fr,
+        "options_en": options_en,
+        "options_fr": options_fr,
+        "answer": answer,
+        "explanation_en": explanation_en,
+        "explanation_fr": explanation_fr
+    }
+
+
+# ---------------------------------------------------------
+# 50 QUESTIONS
+# The answer is the zero-based index of the correct option.
 # ---------------------------------------------------------
 
 questions = [
 
-(
-"What does the Sumerian word DINGIR generally mean?",
-"Que signifie généralement le mot sumérien DINGIR ?",
-["God or deity", "King", "Temple", "Water"],
-["Dieu ou divinité", "Roi", "Temple", "Eau"],
-0,
-"DINGIR is the Sumerian word for a god or deity. It can also function as a divine determinative in writing.",
-"DINGIR désigne un dieu ou une divinité. Il peut également fonctionner comme déterminatif divin dans l’écriture."
-),
+    Q(
+        "Where was the heartland of ancient Sumer located?",
+        "Où se trouvait le cœur de l’ancien pays de Sumer ?",
+        ["Southern Mesopotamia", "Northern Egypt", "The Indus Valley", "Central Anatolia"],
+        ["Dans le sud de la Mésopotamie", "Dans le nord de l’Égypte", "Dans la vallée de l’Indus", "En Anatolie centrale"],
+        0,
+        "Sumer was located in southern Mesopotamia, mainly in the southern part of present-day Iraq.",
+        "Sumer se trouvait dans le sud de la Mésopotamie, principalement dans la partie méridionale de l’actuel Irak."
+    ),
 
-(
-"Which cuneiform sign represents AN?",
-"Quel signe cunéiforme représente AN ?",
-["𒀭", "𒈗", "𒌓", "𒆳"],
-["𒀭", "𒈗", "𒌓", "𒆳"],
-0,
-"The sign 𒀭 is read AN and is associated with heaven and the god An.",
-"Le signe 𒀭 se lit AN et est associé au ciel et au dieu An."
-),
+    Q(
+        "Which two rivers were central to Mesopotamian civilisation?",
+        "Quels sont les deux fleuves qui ont joué un rôle central dans la civilisation mésopotamienne ?",
+        ["Nile and Jordan", "Tigris and Euphrates", "Indus and Ganges", "Danube and Rhine"],
+        ["Le Nil et le Jourdain", "Le Tigre et l’Euphrate", "L’Indus et le Gange", "Le Danube et le Rhin"],
+        1,
+        "The Tigris and Euphrates rivers shaped the landscape, agriculture and settlement patterns of Mesopotamia.",
+        "Le Tigre et l’Euphrate ont façonné le paysage, l’agriculture et les modes d’établissement de la Mésopotamie."
+    ),
 
-(
-"What does É mean in Sumerian?",
-"Que signifie É en sumérien ?",
-["House or temple", "Mountain", "Field", "River"],
-["Maison ou temple", "Montagne", "Champ", "Rivière"],
-0,
-"É means house or temple in Sumerian.",
-"É signifie maison ou temple en sumérien."
-),
+    Q(
+        "Which city is often associated with the earliest development of urban civilisation in Sumer?",
+        "Quelle ville est souvent associée aux premières formes de civilisation urbaine à Sumer ?",
+        ["Uruk", "Babylon", "Nineveh", "Persepolis"],
+        ["Uruk", "Babylone", "Ninive", "Persépolis"],
+        0,
+        "Uruk was one of the earliest major cities in southern Mesopotamia and played a central role in early urban development.",
+        "Uruk fut l’une des premières grandes villes du sud de la Mésopotamie et joua un rôle central dans le développement urbain ancien."
+    ),
 
-(
-"Which sign represents LUGAL?",
-"Quel signe représente LUGAL ?",
-["𒈗", "𒊩", "𒌉", "𒅗"],
-["𒈗", "𒊩", "𒌉", "𒅗"],
-0,
-"The cuneiform sign 𒈗 is read LUGAL, meaning king.",
-"Le signe cunéiforme 𒈗 se lit LUGAL, qui signifie roi."
-),
+    Q(
+        "What type of writing system did the Sumerians develop?",
+        "Quel type de système d’écriture les Sumériens ont-ils développé ?",
+        ["Alphabetic writing", "Cuneiform writing", "Hieroglyphic writing", "Runic writing"],
+        ["L’écriture alphabétique", "L’écriture cunéiforme", "L’écriture hiéroglyphique", "L’écriture runique"],
+        1,
+        "Sumerian scribes used cuneiform, a writing system characterised by wedge-shaped impressions.",
+        "Les scribes sumériens utilisaient l’écriture cunéiforme, un système caractérisé par des impressions en forme de coins."
+    ),
 
-(
-"What is a common meaning of KI?",
-"Quel est un sens courant de KI ?",
-["Earth or place", "Water", "Fire", "King"],
-["Terre ou lieu", "Eau", "Feu", "Roi"],
-0,
-"KI commonly means earth, ground or place, depending on context.",
-"KI signifie couramment terre, sol ou lieu, selon le contexte."
-),
+    Q(
+        "What material was commonly used for Sumerian writing tablets?",
+        "Quel matériau était couramment utilisé pour les tablettes d’écriture sumériennes ?",
+        ["Papyrus", "Clay", "Parchment", "Wood"],
+        ["Le papyrus", "L’argile", "Le parchemin", "Le bois"],
+        1,
+        "Clay was widely used because it was abundant in Mesopotamia and could preserve written records when baked or dried.",
+        "L’argile était largement utilisée, car elle était abondante en Mésopotamie et pouvait conserver les textes lorsqu’elle était séchée ou cuite."
+    ),
 
-(
-"Which cuneiform sign represents UD?",
-"Quel signe cunéiforme représente UD ?",
-["𒌓", "𒀀", "𒄑", "𒈬"],
-["𒌓", "𒀀", "𒄑", "𒈬"],
-0,
-"The sign 𒌓 has the reading UD and is associated with day or sunlight.",
-"Le signe 𒌓 possède notamment la lecture UD et est associé au jour ou à la lumière solaire."
-),
+    Q(
+        "Which tool was commonly used to make impressions on clay tablets?",
+        "Quel outil était couramment utilisé pour faire des impressions sur les tablettes d’argile ?",
+        ["A reed stylus", "A metal pen", "A brush", "A stone chisel"],
+        ["Un stylet en roseau", "Une plume métallique", "Un pinceau", "Un ciseau en pierre"],
+        0,
+        "Scribes commonly used a cut reed stylus to press signs into soft clay.",
+        "Les scribes utilisaient généralement un stylet taillé dans un roseau pour imprimer les signes dans l’argile molle."
+    ),
 
-(
-"What does LUGAL mean?",
-"Que signifie LUGAL ?",
-["King", "Queen", "Priest", "Scribe"],
-["Roi", "Reine", "Prêtre", "Scribe"],
-0,
-"LUGAL is the Sumerian word for king.",
-"LUGAL est le mot sumérien désignant le roi."
-),
+    Q(
+        "What does the word 'cuneiform' refer to?",
+        "À quoi le terme « cunéiforme » fait-il référence ?",
+        ["Circular shapes", "Wedge-shaped forms", "Bird-shaped signs", "Painted symbols"],
+        ["Des formes circulaires", "Des formes en coin", "Des signes en forme d’oiseau", "Des symboles peints"],
+        1,
+        "The term comes from the Latin words cuneus (wedge) and forma (shape).",
+        "Le terme vient des mots latins cuneus (coin) et forma (forme)."
+    ),
 
-(
-"Which cuneiform sign represents A?",
-"Quel signe cunéiforme représente A ?",
-["𒀀", "𒀭", "𒈗", "𒆳"],
-["𒀀", "𒀭", "𒈗", "𒆳"],
-0,
-"The sign 𒀀 is commonly read A and can represent water in appropriate contexts.",
-"Le signe 𒀀 se lit couramment A et peut représenter l’eau dans certains contextes."
-),
+    Q(
+        "What was one of the earliest important uses of writing in Mesopotamia?",
+        "Quel était l’un des premiers usages importants de l’écriture en Mésopotamie ?",
+        ["Recording economic transactions", "Writing novels", "Printing newspapers", "Recording musical performances"],
+        ["L’enregistrement des transactions économiques", "L’écriture de romans", "L’impression de journaux", "L’enregistrement de représentations musicales"],
+        0,
+        "Early written documents often recorded goods, labour, agricultural products and administrative transactions.",
+        "Les premiers documents écrits enregistraient souvent des marchandises, du travail, des produits agricoles et des transactions administratives."
+    ),
 
-(
-"What does AMA mean?",
-"Que signifie AMA ?",
-["Mother", "Father", "Son", "Daughter"],
-["Mère", "Père", "Fils", "Fille"],
-0,
-"AMA is the Sumerian word for mother.",
-"AMA est le mot sumérien pour mère."
-),
+    Q(
+        "Which statement best describes the Sumerian language?",
+        "Quelle affirmation décrit le mieux la langue sumérienne ?",
+        ["It is a Semitic language", "It is generally considered a language isolate", "It is an Indo-European language", "It is a Turkic language"],
+        ["C’est une langue sémitique", "Elle est généralement considérée comme une langue isolée", "C’est une langue indo-européenne", "C’est une langue turcique"],
+        1,
+        "Sumerian is generally classified as a language isolate because no generally accepted genetic relationship with another language has been established.",
+        "Le sumérien est généralement classé comme une langue isolée, car aucune parenté génétique généralement acceptée avec une autre langue n’a été établie."
+    ),
 
-(
-"Which sign represents DUMU?",
-"Quel signe représente DUMU ?",
-["𒌉", "𒊩", "𒅗", "𒄑"],
-["𒌉", "𒊩", "𒅗", "𒄑"],
-0,
-"The sign 𒌉 is read DUMU and means child or son in many contexts.",
-"Le signe 𒌉 se lit DUMU et signifie enfant ou fils dans de nombreux contextes."
-),
+    Q(
+        "Which language was widely used alongside Sumerian in ancient Mesopotamia?",
+        "Quelle langue était largement utilisée aux côtés du sumérien dans l’ancienne Mésopotamie ?",
+        ["Akkadian", "Latin", "Ancient Greek", "Coptic"],
+        ["L’akkadien", "Le latin", "Le grec ancien", "Le copte"],
+        0,
+        "Akkadian, a Semitic language, coexisted with Sumerian and eventually became dominant in many areas of Mesopotamia.",
+        "L’akkadien, une langue sémitique, a coexisté avec le sumérien et est finalement devenu dominant dans de nombreuses régions de Mésopotamie."
+    ),
 
-(
-"What does MUNUS mean?",
-"Que signifie MUNUS ?",
-["Woman or female", "Man or male", "Child", "God"],
-["Femme ou féminin", "Homme ou masculin", "Enfant", "Dieu"],
-0,
-"MUNUS is a Sumerian word and sign associated with woman or the female gender.",
-"MUNUS est un mot et un signe sumériens associés à la femme ou au féminin."
-),
+    Q(
+        "What does the Sumerian sign E₂ commonly mean?",
+        "Que signifie généralement le signe sumérien E₂ ?",
+        ["House", "Water", "King", "Mountain"],
+        ["Maison", "Eau", "Roi", "Montagne"],
+        0,
+        "E₂ is commonly read as 'house' and can refer to a building or institution, depending on context.",
+        "E₂ se lit généralement « maison » et peut désigner un bâtiment ou une institution selon le contexte."
+    ),
 
-(
-"Which sign is commonly read MUNUS?",
-"Quel signe se lit couramment MUNUS ?",
-["𒊩", "𒈗", "𒌓", "𒀀"],
-["𒊩", "𒈗", "𒌓", "𒀀"],
-0,
-"The sign 𒊩 is read MUNUS and is associated with woman or female.",
-"Le signe 𒊩 se lit MUNUS et est associé à la femme ou au féminin."
-),
+    Q(
+        "What does the Sumerian word GAL commonly mean?",
+        "Que signifie généralement le mot sumérien GAL ?",
+        ["Small", "Great or big", "Water", "Earth"],
+        ["Petit", "Grand ou important", "Eau", "Terre"],
+        1,
+        "GAL commonly means 'big' or 'great' in Sumerian.",
+        "GAL signifie généralement « grand » ou « important » en sumérien."
+    ),
 
-(
-"What is the Unicode name of the cuneiform character 𒐕?",
-"Quel est le nom Unicode du caractère cunéiforme 𒐕 ?",
-["ONE GESH2", "ONE DISH", "TWO GESH2", "THREE DISH"],
-["ONE GESH2", "ONE DISH", "TWO GESH2", "THREE DISH"],
-0,
-"The Unicode character U+12415 is named CUNEIFORM NUMERIC SIGN ONE GESH2.",
-"Le caractère Unicode U+12415 porte le nom CUNEIFORM NUMERIC SIGN ONE GESH2."
-),
+    Q(
+        "What does the compound E₂-GAL mean?",
+        "Que signifie le composé E₂-GAL ?",
+        ["Palace", "Canal", "Field", "Workshop"],
+        ["Palais", "Canal", "Champ", "Atelier"],
+        0,
+        "E₂-GAL means 'palace'. It combines E₂ (house) and GAL (great or big).",
+        "E₂-GAL signifie « palais ». Le composé associe E₂ (maison) et GAL (grand ou important)."
+    ),
 
-(
-"Which readings are associated with the signs in 𒀭𒈗, when read separately?",
-"Quelles lectures sont associées aux signes de 𒀭𒈗, lorsqu’ils sont lus séparément ?",
-["AN and LUGAL", "KI and UD", "A and AMA", "DUMU and MUNUS"],
-["AN et LUGAL", "KI et UD", "A et AMA", "DUMU et MUNUS"],
-0,
-"The first sign is AN and the second is LUGAL.",
-"Le premier signe est AN et le second est LUGAL."
-),
+    Q(
+        "What does the Sumerian word LUGAL mean?",
+        "Que signifie le mot sumérien LUGAL ?",
+        ["King", "Scribe", "Farmer", "Priestess"],
+        ["Roi", "Scribe", "Agriculteur", "Prêtresse"],
+        0,
+        "LUGAL is the Sumerian word commonly translated as 'king'.",
+        "LUGAL est le mot sumérien généralement traduit par « roi »."
+    ),
 
-(
-"Which writing system was used to record Sumerian?",
-"Quel système d’écriture était utilisé pour noter le sumérien ?",
-["Cuneiform", "Hieroglyphic alphabet", "Latin alphabet", "Greek alphabet"],
-["L’écriture cunéiforme", "L’alphabet hiéroglyphique", "L’alphabet latin", "L’alphabet grec"],
-0,
-"Sumerian was written using cuneiform, a writing system developed in ancient Mesopotamia.",
-"Le sumérien était écrit en cunéiforme, un système d’écriture développé dans l’ancienne Mésopotamie."
-),
+    Q(
+        "What was a DUB-SAR?",
+        "Qu’était un DUB-SAR ?",
+        ["A scribe", "A soldier", "A farmer", "A merchant ship"],
+        ["Un scribe", "Un soldat", "Un agriculteur", "Un navire marchand"],
+        0,
+        "DUB-SAR refers to a scribe, literally associated with writing on tablets.",
+        "DUB-SAR désigne un scribe, littéralement associé à l’écriture sur des tablettes."
+    ),
 
-(
-"What can KUR mean in Sumerian?",
-"Que peut signifier KUR en sumérien ?",
-["Mountain or land", "Water or river", "House or temple", "Mother or woman"],
-["Montagne ou pays", "Eau ou rivière", "Maison ou temple", "Mère ou femme"],
-0,
-"KUR can mean mountain, land or foreign country, depending on context.",
-"KUR peut signifier montagne, pays ou territoire étranger, selon le contexte."
-),
+    Q(
+        "What was a ziggurat?",
+        "Qu’était une ziggourat ?",
+        ["A stepped monumental structure", "A royal boat", "A type of textile", "A military weapon"],
+        ["Une construction monumentale à étages", "Un bateau royal", "Un type de textile", "Une arme militaire"],
+        0,
+        "A ziggurat was a monumental stepped structure associated with religious and temple complexes.",
+        "Une ziggourat était une construction monumentale à étages associée aux complexes religieux et aux temples."
+    ),
 
-(
-"Which sign represents KUR?",
-"Quel signe représente KUR ?",
-["𒆳", "𒀭", "𒅗", "𒌉"],
-["𒆳", "𒀭", "𒅗", "𒌉"],
-0,
-"The cuneiform sign 𒆳 is commonly read KUR.",
-"Le signe cunéiforme 𒆳 se lit couramment KUR."
-),
+    Q(
+        "Which Sumerian city is famous for its well-known ziggurat?",
+        "Quelle ville sumérienne est célèbre pour sa ziggourat ?",
+        ["Ur", "Memphis", "Athens", "Carthage"],
+        ["Ur", "Memphis", "Athènes", "Carthage"],
+        0,
+        "The ziggurat of Ur, associated with the moon god Nanna, is one of the best-known surviving monuments of ancient Mesopotamia.",
+        "La ziggourat d’Ur, associée au dieu-lune Nanna, est l’un des monuments les plus connus de l’ancienne Mésopotamie."
+    ),
 
-(
-"What does GIS commonly refer to?",
-"À quoi GIS fait-il généralement référence ?",
-["Tree or wood", "Water", "Sky", "King"],
-["Arbre ou bois", "Eau", "Ciel", "Roi"],
-0,
-"GIS is associated with tree or wood and also appears in the writing of words related to wooden objects.",
-"GIS est associé à l’arbre ou au bois et apparaît également dans l’écriture de mots liés aux objets en bois."
-),
+    Q(
+        "Which goddess was especially associated with love, sexuality and warfare?",
+        "Quelle déesse était particulièrement associée à l’amour, à la sexualité et à la guerre ?",
+        ["Inanna", "Nisaba", "Ninhursag", "Ereshkigal"],
+        ["Inanna", "Nisaba", "Ninhursag", "Ereshkigal"],
+        0,
+        "Inanna was a major Sumerian goddess associated with love, sexuality, political power and warfare.",
+        "Inanna était une grande déesse sumérienne associée à l’amour, à la sexualité, au pouvoir politique et à la guerre."
+    ),
 
-(
-"Which sign is commonly read GIS?",
-"Quel signe se lit couramment GIS ?",
-["𒄑", "𒈗", "𒌓", "𒈬"],
-["𒄑", "𒈗", "𒌓", "𒈬"],
-0,
-"The sign 𒄑 is commonly read GIS and is associated with wood.",
-"Le signe 𒄑 se lit couramment GIS et est associé au bois."
-),
+    Q(
+        "Which god was associated with wisdom and freshwater?",
+        "Quel dieu était associé à la sagesse et à l’eau douce ?",
+        ["Enki", "Nanna", "Utu", "Nergal"],
+        ["Enki", "Nanna", "Utu", "Nergal"],
+        0,
+        "Enki, also known in Akkadian as Ea, was associated with wisdom, freshwater and the subterranean waters known as the Apsu.",
+        "Enki, également connu sous le nom akkadien d’Ea, était associé à la sagesse, à l’eau douce et aux eaux souterraines appelées Apsu."
+    ),
 
-(
-"What does KA mean?",
-"Que signifie KA ?",
-["Mouth", "Hand", "Foot", "Eye"],
-["Bouche", "Main", "Pied", "Œil"],
-0,
-"KA is the Sumerian word for mouth.",
-"KA est le mot sumérien pour bouche."
-),
+    Q(
+        "Which god was associated with the moon?",
+        "Quel dieu était associé à la Lune ?",
+        ["Nanna", "Utu", "Enlil", "Enki"],
+        ["Nanna", "Utu", "Enlil", "Enki"],
+        0,
+        "Nanna, also called Suen, was the Sumerian moon god.",
+        "Nanna, également appelé Suen, était le dieu-lune sumérien."
+    ),
 
-(
-"Which sign represents KA?",
-"Quel signe représente KA ?",
-["𒅗", "𒊩", "𒆳", "𒀀"],
-["𒅗", "𒊩", "𒆳", "𒀀"],
-0,
-"The cuneiform sign 𒅗 is read KA.",
-"Le signe cunéiforme 𒅗 se lit KA."
-),
+    Q(
+        "Which god was associated with the sun?",
+        "Quel dieu était associé au Soleil ?",
+        ["Utu", "Nanna", "Enki", "Dumuzi"],
+        ["Utu", "Nanna", "Enki", "Dumuzi"],
+        0,
+        "Utu was the Sumerian sun god, associated with justice and judgement.",
+        "Utu était le dieu solaire sumérien, associé à la justice et au jugement."
+    ),
 
-(
-"What does MU commonly mean?",
-"Que signifie couramment MU ?",
-["Name", "Mountain", "House", "Woman"],
-["Nom", "Montagne", "Maison", "Femme"],
-0,
-"MU commonly means name, although the sign has other readings and meanings in different contexts.",
-"MU signifie couramment nom, bien que le signe possède d’autres lectures et significations selon le contexte."
-),
+    Q(
+        "Which goddess was associated with writing and grain?",
+        "Quelle déesse était associée à l’écriture et aux céréales ?",
+        ["Nisaba", "Inanna", "Ereshkigal", "Geshtinanna"],
+        ["Nisaba", "Inanna", "Ereshkigal", "Geshtinanna"],
+        0,
+        "Nisaba was associated with grain, accounting and scribal learning.",
+        "Nisaba était associée aux céréales, à la comptabilité et au savoir des scribes."
+    ),
 
-(
-"Which sign represents MU?",
-"Quel signe représente MU ?",
-["𒈬", "𒌓", "𒄑", "𒌉"],
-["𒈬", "𒌓", "𒄑", "𒌉"],
-0,
-"The sign 𒈬 is commonly read MU.",
-"Le signe 𒈬 se lit couramment MU."
-),
+    Q(
+        "Who was Enlil?",
+        "Qui était Enlil ?",
+        ["A major god associated with air and authority", "A Sumerian king", "A famous scribe", "A goddess of weaving"],
+        ["Un grand dieu associé à l’air et à l’autorité", "Un roi sumérien", "Un célèbre scribe", "Une déesse du tissage"],
+        0,
+        "Enlil was one of the most important Mesopotamian gods and was associated with authority, wind and the atmosphere.",
+        "Enlil était l’un des dieux les plus importants de Mésopotamie. Il était associé à l’autorité, au vent et à l’atmosphère."
+    ),
 
-(
-"What does GAL mean?",
-"Que signifie GAL ?",
-["Great or big", "Small", "Old", "Young"],
-["Grand ou important", "Petit", "Vieux", "Jeune"],
-0,
-"GAL means great, big or large.",
-"GAL signifie grand, important ou de grande taille."
-),
+    Q(
+        "Who was Ereshkigal?",
+        "Qui était Ereshkigal ?",
+        ["Goddess of the underworld", "Goddess of the moon", "Goddess of weaving", "Goddess of the harvest"],
+        ["La déesse des Enfers", "La déesse de la Lune", "La déesse du tissage", "La déesse des récoltes"],
+        0,
+        "Ereshkigal was the goddess who ruled the underworld in Mesopotamian mythology.",
+        "Ereshkigal était la déesse qui régnait sur les Enfers dans la mythologie mésopotamienne."
+    ),
 
-(
-"Which sign represents GAL?",
-"Quel signe représente GAL ?",
-["𒃲", "𒅗", "𒀭", "𒊩"],
-["𒃲", "𒅗", "𒀭", "𒊩"],
-0,
-"The cuneiform sign 𒃲 is read GAL.",
-"Le signe cunéiforme 𒃲 se lit GAL."
-),
+    Q(
+        "Which goddess is often described as a mother goddess associated with mountains and fertility?",
+        "Quelle déesse est souvent décrite comme une déesse mère associée aux montagnes et à la fertilité ?",
+        ["Ninhursag", "Inanna", "Nisaba", "Ereshkigal"],
+        ["Ninhursag", "Inanna", "Nisaba", "Ereshkigal"],
+        0,
+        "Ninhursag was a major mother goddess associated with fertility and the creation of life.",
+        "Ninhursag était une grande déesse mère associée à la fertilité et à la création de la vie."
+    ),
 
-(
-"What is the usual basic word order in a Sumerian verbal clause?",
-"Quel est généralement l’ordre des mots de base dans une proposition verbale sumérienne ?",
-["Subject–Object–Verb", "Subject–Verb–Object", "Verb–Subject–Object", "Object–Verb–Subject"],
-["Sujet–Objet–Verbe", "Sujet–Verbe–Objet", "Verbe–Sujet–Objet", "Objet–Verbe–Sujet"],
-0,
-"Sumerian generally follows Subject–Object–Verb order, although information structure and other constructions can affect word order.",
-"Le sumérien suit généralement l’ordre Sujet–Objet–Verbe, même si la structure informationnelle et certaines constructions peuvent modifier cet ordre."
-),
+    Q(
+        "Who was Dumuzi?",
+        "Qui était Dumuzi ?",
+        ["A god associated with shepherds and vegetation", "A god of the moon", "A Sumerian lawgiver", "A city governor"],
+        ["Un dieu associé aux bergers et à la végétation", "Un dieu de la Lune", "Un législateur sumérien", "Un gouverneur de ville"],
+        0,
+        "Dumuzi was a shepherd deity associated with vegetation and seasonal cycles.",
+        "Dumuzi était une divinité pastorale associée à la végétation et aux cycles saisonniers."
+    ),
 
-(
-"How is Sumerian generally classified linguistically?",
-"Comment le sumérien est-il généralement classé sur le plan linguistique ?",
-["Language isolate", "Semitic language", "Indo-European language", "Turkic language"],
-["Langue isolée", "Langue sémitique", "Langue indo-européenne", "Langue turcique"],
-0,
-"Sumerian is generally considered a language isolate because no genetic relationship with another language family has been demonstrated.",
-"Le sumérien est généralement considéré comme une langue isolée, car aucune parenté génétique avec une autre famille linguistique n’a été démontrée."
-),
+    Q(
+        "Which city was traditionally associated with the goddess Inanna?",
+        "Quelle ville était traditionnellement associée à la déesse Inanna ?",
+        ["Uruk", "Mari", "Hattusa", "Byblos"],
+        ["Uruk", "Mari", "Hattusa", "Byblos"],
+        0,
+        "Inanna had a major sanctuary in Uruk, particularly in the Eanna temple district.",
+        "Inanna possédait un sanctuaire important à Uruk, notamment dans le quartier du temple Eanna."
+    ),
 
-(
-"What does the term cuneiform literally refer to?",
-"À quoi le terme « cunéiforme » fait-il littéralement référence ?",
-["Wedge-shaped", "Circular writing", "Picture writing", "Alphabetic writing"],
-["En forme de coin", "Écriture circulaire", "Écriture pictographique", "Écriture alphabétique"],
-0,
-"The term cuneiform comes from a word meaning wedge-shaped, referring to the characteristic marks.",
-"Le terme cunéiforme vient d’un mot signifiant « en forme de coin », en référence aux marques caractéristiques."
-),
+    Q(
+        "Who was Gilgamesh in Mesopotamian tradition?",
+        "Qui était Gilgamesh dans la tradition mésopotamienne ?",
+        ["A king of Uruk", "A god of writing", "A Babylonian law code", "A Sumerian textile worker"],
+        ["Un roi d’Uruk", "Un dieu de l’écriture", "Un code de lois babylonien", "Un artisan textile sumérien"],
+        0,
+        "Gilgamesh was remembered as a king of Uruk and became the central figure of an important literary tradition.",
+        "Gilgamesh était considéré comme un roi d’Uruk et devint le personnage central d’une importante tradition littéraire."
+    ),
 
-(
-"What does the Sumerian word NIN commonly mean?",
-"Que signifie couramment le mot sumérien NIN ?",
-["Lady or mistress", "King", "Servant", "Farmer"],
-["Dame ou maîtresse", "Roi", "Serviteur", "Agriculteur"],
-0,
-"NIN is commonly used for lady, mistress or a female authority figure.",
-"NIN est couramment utilisé pour désigner une dame, une maîtresse ou une figure féminine d’autorité."
-),
+    Q(
+        "What is the Epic of Gilgamesh?",
+        "Qu’est-ce que l’Épopée de Gilgamesh ?",
+        ["A Mesopotamian literary epic", "A Sumerian tax register", "A royal building", "A type of cylinder seal"],
+        ["Une épopée littéraire mésopotamienne", "Un registre fiscal sumérien", "Un bâtiment royal", "Un type de sceau-cylindre"],
+        0,
+        "The Epic of Gilgamesh is a major Mesopotamian literary work, preserved principally in Akkadian versions, with earlier Sumerian poems about Gilgamesh.",
+        "L’Épopée de Gilgamesh est une œuvre majeure de la littérature mésopotamienne, principalement conservée dans des versions akkadiennes, avec des poèmes sumériens plus anciens consacrés à Gilgamesh."
+    ),
 
-(
-"What does EN commonly mean in Sumerian titles?",
-"Que signifie couramment EN dans les titres sumériens ?",
-["Lord or high priest", "Farmer", "Merchant", "Soldier"],
-["Seigneur ou grand prêtre", "Agriculteur", "Marchand", "Soldat"],
-0,
-"EN can mean lord and is also used in certain religious and political titles.",
-"EN peut signifier seigneur et est également utilisé dans certains titres religieux et politiques."
-),
+    Q(
+        "Who was Enheduanna?",
+        "Qui était Enheduanna ?",
+        ["A high priestess and literary author", "A military commander", "A Babylonian architect", "A goddess of the underworld"],
+        ["Une grande prêtresse et autrice", "Une commandante militaire", "Une architecte babylonienne", "Une déesse des Enfers"],
+        0,
+        "Enheduanna was a high priestess of the moon god at Ur and is widely regarded as the earliest known author identified by name.",
+        "Enheduanna était une grande prêtresse du dieu-lune à Ur. Elle est largement considérée comme la plus ancienne autrice connue identifiée par son nom."
+    ),
 
-(
-"What does NINDA mean?",
-"Que signifie NINDA ?",
-["Bread or food", "Water", "Wood", "Cloth"],
-["Pain ou nourriture", "Eau", "Bois", "Tissu"],
-0,
-"NINDA is a Sumerian word associated with bread and food.",
-"NINDA est un mot sumérien associé au pain et à la nourriture."
-),
+    Q(
+        "Which ruler founded the Third Dynasty of Ur?",
+        "Quel souverain a fondé la troisième dynastie d’Ur ?",
+        ["Ur-Nammu", "Sargon of Akkad", "Hammurabi", "Nebuchadnezzar II"],
+        ["Ur-Nammu", "Sargon d’Akkad", "Hammurabi", "Nabuchodonosor II"],
+        0,
+        "Ur-Nammu founded the Third Dynasty of Ur, also known as the Ur III period.",
+        "Ur-Nammu fonda la troisième dynastie d’Ur, également appelée période d’Ur III."
+    ),
 
-(
-"What does AŠ mean in Sumerian numeration?",
-"Que représente AŠ dans la numération sumérienne ?",
-["One", "Two", "Five", "Ten"],
-["Un", "Deux", "Cinq", "Dix"],
-0,
-"AŠ is a basic Sumerian numerical term meaning one.",
-"AŠ est un terme numérique sumérien de base qui signifie un."
-),
+    Q(
+        "Which ruler is associated with the law code of Ur-Nammu?",
+        "Quel souverain est associé au code de lois d’Ur-Nammu ?",
+        ["Ur-Nammu", "Gudea", "Gilgamesh", "Sargon II"],
+        ["Ur-Nammu", "Gudea", "Gilgamesh", "Sargon II"],
+        0,
+        "The Code of Ur-Nammu is associated with the founder of the Third Dynasty of Ur and is among the earliest surviving law collections.",
+        "Le Code d’Ur-Nammu est associé au fondateur de la troisième dynastie d’Ur et figure parmi les plus anciennes collections de lois conservées."
+    ),
 
-(
-"What does MIN mean in Sumerian numeration?",
-"Que représente MIN dans la numération sumérienne ?",
-["Two", "One", "Three", "Four"],
-["Deux", "Un", "Trois", "Quatre"],
-0,
-"MIN is the Sumerian numerical term for two.",
-"MIN est le terme numérique sumérien pour deux."
-),
+    Q(
+        "Who was Gudea?",
+        "Qui était Gudea ?",
+        ["A ruler of Lagash", "A king of Egypt", "A Hittite general", "A Babylonian goddess"],
+        ["Un souverain de Lagash", "Un roi d’Égypte", "Un général hittite", "Une déesse babylonienne"],
+        0,
+        "Gudea was a ruler of the city-state of Lagash, known especially for inscriptions and statues.",
+        "Gudea était un souverain de la cité-État de Lagash, particulièrement connu pour ses inscriptions et ses statues."
+    ),
 
-(
-"What does EŠE mean in Sumerian numeration?",
-"Que représente EŠE dans la numération sumérienne ?",
-["Three", "Two", "Four", "Five"],
-["Trois", "Deux", "Quatre", "Cinq"],
-0,
-"EŠE is a Sumerian numerical term meaning three.",
-"EŠE est un terme numérique sumérien qui signifie trois."
-),
+    Q(
+        "What was a cylinder seal used for?",
+        "À quoi servait un sceau-cylindre ?",
+        ["Identifying and authenticating documents or property", "Cutting textiles", "Measuring rainfall", "Lighting temples"],
+        ["À identifier et authentifier des documents ou des biens", "À couper des textiles", "À mesurer les précipitations", "À éclairer les temples"],
+        0,
+        "A cylinder seal was rolled over clay to create a distinctive impression used for identification and authentication.",
+        "Un sceau-cylindre était roulé sur l’argile afin de produire une empreinte distinctive utilisée pour l’identification et l’authentification."
+    ),
 
-(
-"What was the principal writing material for many Mesopotamian cuneiform documents?",
-"Quel était le principal support d’écriture de nombreux documents cunéiformes mésopotamiens ?",
-["Clay tablets", "Papyrus scrolls", "Silk sheets", "Wooden books"],
-["Tablettes d’argile", "Rouleaux de papyrus", "Feuilles de soie", "Livres en bois"],
-0,
-"Many Mesopotamian texts were written on clay tablets using a stylus.",
-"De nombreux textes mésopotamiens étaient écrits sur des tablettes d’argile à l’aide d’un stylet."
-),
+    Q(
+        "What was one important use of cylinder seals in Mesopotamia?",
+        "Quel était l’un des usages importants des sceaux-cylindres en Mésopotamie ?",
+        ["Sealing containers and administrative documents", "Weaving wool", "Writing on papyrus", "Making bronze weapons"],
+        ["Sceller des récipients et des documents administratifs", "Tisser la laine", "Écrire sur du papyrus", "Fabriquer des armes en bronze"],
+        0,
+        "Cylinder seals could be rolled over clay sealings to secure containers, doors and administrative records.",
+        "Les sceaux-cylindres pouvaient être roulés sur des scellements d’argile afin de sécuriser des récipients, des portes et des documents administratifs."
+    ),
 
-(
-"Which tool was commonly used to impress cuneiform signs into clay?",
-"Quel outil était couramment utilisé pour imprimer les signes cunéiformes dans l’argile ?",
-["A reed stylus", "A metal brush", "A feather quill", "A stone chisel"],
-["Un stylet en roseau", "Un pinceau métallique", "Une plume", "Un ciseau en pierre"],
-0,
-"A reed stylus was commonly pressed into soft clay to create cuneiform impressions.",
-"Un stylet en roseau était couramment pressé dans l’argile humide pour produire les empreintes cunéiformes."
-),
+    Q(
+        "Which numbering system was important in Mesopotamian mathematics?",
+        "Quel système de numération était important dans les mathématiques mésopotamiennes ?",
+        ["Sexagesimal (base 60)", "Decimal (base 10) only", "Binary (base 2)", "Vigesimal (base 20)"],
+        ["Le système sexagésimal (base 60)", "Le système décimal (base 10) uniquement", "Le système binaire (base 2)", "Le système vigésimal (base 20)"],
+        0,
+        "Mesopotamian mathematical traditions made extensive use of a sexagesimal system based on 60.",
+        "Les traditions mathématiques mésopotamiennes utilisaient largement un système sexagésimal fondé sur 60."
+    ),
 
-(
-"Which ancient city was a major centre of Sumerian culture?",
-"Quelle ancienne ville était un centre majeur de la culture sumérienne ?",
-["Uruk", "Athens", "Rome", "Alexandria"],
-["Uruk", "Athènes", "Rome", "Alexandrie"],
-0,
-"Uruk was one of the most important early urban centres in southern Mesopotamia.",
-"Uruk était l’un des centres urbains les plus importants de la Mésopotamie méridionale ancienne."
-),
+    Q(
+        "Which modern measurement still reflects the Mesopotamian base-60 tradition?",
+        "Quelle mesure moderne reflète encore la tradition mésopotamienne de la base 60 ?",
+        ["60 seconds in a minute", "10 centimetres in a decimetre", "100 years in a century", "7 days in a week"],
+        ["60 secondes dans une minute", "10 centimètres dans un décimètre", "100 ans dans un siècle", "7 jours dans une semaine"],
+        0,
+        "The division of an hour into 60 minutes and a minute into 60 seconds reflects the long history of sexagesimal mathematics.",
+        "La division d’une heure en 60 minutes et d’une minute en 60 secondes reflète la longue histoire des mathématiques sexagésimales."
+    ),
 
-(
-"Which archaeological site is associated with the famous Royal Cemetery?",
-"Quel site archéologique est associé au célèbre cimetière royal ?",
-["Ur", "Nineveh", "Persepolis", "Hattusa"],
-["Ur", "Ninive", "Persépolis", "Hattusa"],
-0,
-"The Royal Cemetery of Ur is famous for its rich burials and archaeological finds.",
-"Le cimetière royal d’Ur est célèbre pour ses sépultures riches et ses découvertes archéologiques."
-),
+    Q(
+        "What was a common agricultural crop in ancient southern Mesopotamia?",
+        "Quelle culture agricole était courante dans le sud de l’ancienne Mésopotamie ?",
+        ["Barley", "Coffee", "Potatoes", "Maize"],
+        ["L’orge", "Le café", "Les pommes de terre", "Le maïs"],
+        0,
+        "Barley was a major crop in Mesopotamia and was important for food, payments and administration.",
+        "L’orge était une culture majeure en Mésopotamie et jouait un rôle important dans l’alimentation, les paiements et l’administration."
+    ),
 
-(
-"Which Sumerian ruler is associated with the famous law collection known as the Code of Ur-Nammu?",
-"Quel souverain sumérien est associé au célèbre recueil de lois appelé Code d’Ur-Nammu ?",
-["Ur-Nammu", "Sargon of Akkad", "Hammurabi", "Ashurbanipal"],
-["Ur-Nammu", "Sargon d’Akkad", "Hammurabi", "Assurbanipal"],
-0,
-"Ur-Nammu is associated with one of the earliest known surviving law collections.",
-"Ur-Nammu est associé à l’un des plus anciens recueils de lois conservés."
-),
+    Q(
+        "Why were irrigation systems important in Sumer?",
+        "Pourquoi les systèmes d’irrigation étaient-ils importants à Sumer ?",
+        ["They supplied water to agricultural land", "They provided electricity", "They protected against earthquakes", "They produced metal"],
+        ["Ils apportaient de l’eau aux terres agricoles", "Ils produisaient de l’électricité", "Ils protégeaient contre les tremblements de terre", "Ils produisaient du métal"],
+        0,
+        "Canals and irrigation works helped bring river water to fields in the relatively dry southern Mesopotamian environment.",
+        "Les canaux et les ouvrages d’irrigation permettaient d’apporter l’eau des fleuves aux champs dans l’environnement relativement aride du sud mésopotamien."
+    ),
 
-(
-"Which language was closely related to Sumerian in the region but belongs to the Semitic family?",
-"Quelle langue, présente dans la région et en contact étroit avec le sumérien, appartient à la famille sémitique ?",
-["Akkadian", "Elamite", "Hurrian", "Hattic"],
-["L’akkadien", "L’élamite", "Le hourrite", "Le hattique"],
-0,
-"Akkadian is a Semitic language that coexisted and interacted with Sumerian.",
-"L’akkadien est une langue sémitique qui a coexisté et interagi avec le sumérien."
-),
+    Q(
+        "Which material was widely used for making textiles in ancient Mesopotamia?",
+        "Quel matériau était largement utilisé pour fabriquer des textiles dans l’ancienne Mésopotamie ?",
+        ["Wool", "Nylon", "Polyester", "Synthetic acrylic"],
+        ["La laine", "Le nylon", "Le polyester", "L’acrylique synthétique"],
+        0,
+        "Sheep's wool was a major textile material in Mesopotamia. Flax linen was also known and used.",
+        "La laine de mouton était une matière textile majeure en Mésopotamie. Le lin était également connu et utilisé."
+    ),
 
-(
-"What is a characteristic of an agglutinative language such as Sumerian?",
-"Quelle est une caractéristique d’une langue agglutinante comme le sumérien ?",
-["Grammatical elements are added in sequences", "Words never change form", "Only word order expresses grammar", "It has no suffixes"],
-["Les éléments grammaticaux sont ajoutés en séquence", "Les mots ne changent jamais de forme", "Seul l’ordre des mots exprime la grammaire", "La langue ne possède aucun suffixe"],
-0,
-"Sumerian is agglutinative: grammatical elements are attached to a base in sequences.",
-"Le sumérien est une langue agglutinante : des éléments grammaticaux sont ajoutés successivement à une base."
-),
+    Q(
+        "Which plant was the source of linen fibres in the ancient world?",
+        "Quelle plante était la source des fibres de lin dans le monde ancien ?",
+        ["Flax", "Cotton", "Papyrus", "Hemp"],
+        ["Le lin", "Le coton", "Le papyrus", "Le chanvre"],
+        0,
+        "Linen fibres are obtained from the flax plant, Linum usitatissimum.",
+        "Les fibres de lin sont obtenues à partir de la plante de lin, Linum usitatissimum."
+    ),
 
-(
-"What is a ziggurat?",
-"Qu’est-ce qu’une ziggourat ?",
-["A monumental stepped temple structure", "A royal crown", "A type of boat", "A writing instrument"],
-["Une construction monumentale à étages servant de temple", "Une couronne royale", "Un type de bateau", "Un instrument d’écriture"],
-0,
-"A ziggurat is a monumental stepped structure associated with religious architecture in Mesopotamia.",
-"Une ziggourat est une construction monumentale à étages associée à l’architecture religieuse de Mésopotamie."
-),
+    Q(
+        "What is spinning in textile production?",
+        "Qu’est-ce que le filage dans la production textile ?",
+        ["Turning fibres into yarn", "Dyeing finished cloth", "Cutting a garment", "Printing patterns on fabric"],
+        ["Transformer les fibres en fil", "Teindre un tissu terminé", "Couper un vêtement", "Imprimer des motifs sur un tissu"],
+        0,
+        "Spinning is the process of drawing out and twisting fibres to create yarn.",
+        "Le filage consiste à étirer et à tordre des fibres afin de produire du fil."
+    ),
 
-(
-"Which material was commonly used to make cylinder seals in Mesopotamia?",
-"Quel matériau était couramment utilisé pour fabriquer les sceaux-cylindres en Mésopotamie ?",
-["Stone", "Paper", "Glass fibre", "Cotton"],
-["La pierre", "Le papier", "La fibre de verre", "Le coton"],
-0,
-"Cylinder seals were commonly carved from stone and rolled over clay to create impressions.",
-"Les sceaux-cylindres étaient souvent gravés dans la pierre puis roulés sur l’argile pour y laisser une empreinte."
-),
+    Q(
+        "What is weaving?",
+        "Qu’est-ce que le tissage ?",
+        ["Interlacing warp and weft yarns", "Twisting fibres into yarn", "Carving wood", "Dyeing wool"],
+        ["L’entrecroisement des fils de chaîne et de trame", "La torsion des fibres pour produire du fil", "La sculpture du bois", "La teinture de la laine"],
+        0,
+        "Weaving creates fabric by interlacing two sets of yarns: the warp and the weft.",
+        "Le tissage produit un tissu en entrecroisant deux séries de fils : la chaîne et la trame."
+    ),
 
-(
-"What was one important function of cylinder seals?",
-"Quelle était l’une des fonctions importantes des sceaux-cylindres ?",
-["Authentication and administration", "Measuring temperature", "Making textiles", "Producing metal tools"],
-["L’authentification et l’administration", "La mesure de la température", "La fabrication de textiles", "La production d’outils métalliques"],
-0,
-"Cylinder seals could identify individuals, authenticate documents and secure goods.",
-"Les sceaux-cylindres pouvaient identifier des personnes, authentifier des documents et sécuriser des biens."
-),
+    Q(
+        "What is the warp in a woven textile?",
+        "Qu’est-ce que la chaîne dans un textile tissé ?",
+        ["The lengthwise yarns held under tension", "The crosswise yarns", "The finished fringe", "The dye applied to the fabric"],
+        ["Les fils longitudinaux maintenus sous tension", "Les fils transversaux", "Les franges du tissu terminé", "La teinture appliquée au tissu"],
+        0,
+        "The warp consists of the lengthwise yarns arranged on the loom and held under tension.",
+        "La chaîne est constituée des fils longitudinaux disposés sur le métier à tisser et maintenus sous tension."
+    ),
 
-(
-"Which natural fibre was widely used in ancient Mesopotamian textile production?",
-"Quelle fibre naturelle était largement utilisée dans la production textile de l’ancienne Mésopotamie ?",
-["Flax", "Nylon", "Polyester", "Acrylic"],
-["Le lin", "Le nylon", "Le polyester", "L’acrylique"],
-0,
-"Flax was an important source of linen fibre in the ancient Near East, including Mesopotamia.",
-"Le lin était une source importante de fibres textiles dans le Proche-Orient ancien, notamment en Mésopotamie."
-),
+    Q(
+        "What is the weft in a woven textile?",
+        "Qu’est-ce que la trame dans un textile tissé ?",
+        ["The crosswise yarns passing through the warp", "The lengthwise yarns", "The loom frame", "The finished textile edge"],
+        ["Les fils transversaux passant à travers la chaîne", "Les fils longitudinaux", "Le cadre du métier à tisser", "Le bord du textile terminé"],
+        0,
+        "The weft is inserted across the warp to form the woven structure.",
+        "La trame est insérée transversalement à travers la chaîne afin de former la structure du tissu."
+    ),
 
-(
-"What is the main product obtained from flax stems for textile production?",
-"Quel est le principal produit obtenu à partir des tiges de lin pour la production textile ?",
-["Bast fibres", "Metal threads", "Animal hair", "Mineral crystals"],
-["Des fibres libériennes", "Des fils métalliques", "Des poils d’animaux", "Des cristaux minéraux"],
-0,
-"Flax stems contain bast fibres that can be processed into linen yarn and fabric.",
-"Les tiges de lin contiennent des fibres libériennes qui peuvent être transformées en fils et en tissus de lin."
-),
+    Q(
+        "What does the term 'archaeological textile' refer to?",
+        "À quoi fait référence le terme « textile archéologique » ?",
+        ["A textile preserved from an archaeological context", "A modern textile inspired by antiquity", "A drawing of a garment", "A textile made only for decoration"],
+        ["Un textile conservé dans un contexte archéologique", "Un textile moderne inspiré de l’Antiquité", "Un dessin de vêtement", "Un textile fabriqué uniquement à des fins décoratives"],
+        0,
+        "An archaeological textile is a textile or textile fragment recovered from an archaeological context.",
+        "Un textile archéologique est un textile ou un fragment textile provenant d’un contexte archéologique."
+    ),
 
-(
-"What is the purpose of spinning in textile production?",
-"Quel est le but du filage dans la production textile ?",
-["To make fibres into yarn", "To dye finished fabric", "To cut garments", "To weave a basket"],
-["Transformer les fibres en fil", "Teindre le tissu fini", "Couper les vêtements", "Tisser un panier"],
-0,
-"Spinning twists fibres together to produce yarn.",
-"Le filage consiste à tordre les fibres ensemble pour produire du fil."
-),
+    Q(
+        "Which city is particularly associated with the ancient kingdom of Mari?",
+        "Quelle ville est particulièrement associée à l’ancien royaume de Mari ?",
+        ["Mari, on the Euphrates", "Uruk, on the Nile", "Athens, on the Tigris", "Memphis, on the Euphrates"],
+        ["Mari, sur l’Euphrate", "Uruk, sur le Nil", "Athènes, sur le Tigre", "Memphis, sur l’Euphrate"],
+        0,
+        "Mari was an important ancient city on the middle Euphrates, in present-day Syria.",
+        "Mari était une importante ville ancienne située sur le moyen Euphrate, dans l’actuelle Syrie."
+    ),
 
-(
-"What is the main function of a loom?",
-"Quelle est la fonction principale d’un métier à tisser ?",
-["To interlace warp and weft yarns", "To spin raw fibres", "To extract flax seeds", "To carve stone"],
-["Entrecroiser les fils de chaîne et de trame", "Filer les fibres brutes", "Extraire les graines de lin", "Tailler la pierre"],
-0,
-"A loom holds the warp threads and allows weft threads to be interlaced with them.",
-"Un métier à tisser maintient les fils de chaîne et permet d’entrecroiser les fils de trame."
-),
+    Q(
+        "Which archaeological site is associated with the ancient Hurrian city of Urkesh?",
+        "Quel site archéologique est associé à l’ancienne cité hourrite d’Urkesh ?",
+        ["Tell Mozan", "Tell Brak", "Ur", "Eridu"],
+        ["Tell Mozan", "Tell Brak", "Ur", "Eridu"],
+        0,
+        "Tell Mozan in northeastern Syria is identified with ancient Urkesh, an important Hurrian centre.",
+        "Tell Mozan, dans le nord-est de la Syrie, est identifié à l’ancienne Urkesh, un important centre hourrite."
+    ),
 
-(
-"What is the warp in weaving?",
-"Qu’est-ce que la chaîne dans le tissage ?",
-["The lengthwise threads", "The crosswise threads", "The finished fabric edge", "The spinning spindle"],
-["Les fils longitudinaux", "Les fils transversaux", "Le bord du tissu fini", "Le fuseau de filage"],
-0,
-"The warp consists of the lengthwise threads held under tension on a loom.",
-"La chaîne est constituée des fils longitudinaux maintenus sous tension sur le métier à tisser."
-),
+    Q(
+        "Which language is associated with the Hurrians?",
+        "Quelle langue est associée aux Hourrites ?",
+        ["Hurrian", "Latin", "Old Persian", "Ancient Egyptian"],
+        ["Le hourrite", "Le latin", "Le vieux perse", "L’égyptien ancien"],
+        0,
+        "The Hurrians spoke Hurrian, a language distinct from Sumerian and Akkadian.",
+        "Les Hourrites parlaient le hourrite, une langue distincte du sumérien et de l’akkadien."
+    ),
 
-(
-"What is the weft in weaving?",
-"Qu’est-ce que la trame dans le tissage ?",
-["The crosswise threads", "The lengthwise threads", "The loom frame", "The finished garment"],
-["Les fils transversaux", "Les fils longitudinaux", "Le cadre du métier", "Le vêtement fini"],
-0,
-"The weft threads pass across the warp to form the woven fabric.",
-"Les fils de trame passent transversalement à travers la chaîne pour former le tissu."
-),
+    Q(
+        "Which empire was founded by Sargon of Akkad?",
+        "Quel empire fut fondé par Sargon d’Akkad ?",
+        ["The Akkadian Empire", "The Neo-Assyrian Empire", "The Persian Empire", "The Roman Empire"],
+        ["L’Empire akkadien", "L’Empire néo-assyrien", "L’Empire perse", "L’Empire romain"],
+        0,
+        "Sargon of Akkad established the Akkadian Empire in the third millennium BCE.",
+        "Sargon d’Akkad établit l’Empire akkadien au troisième millénaire avant notre ère."
+    ),
 
-(
-"What is a spindle used for?",
-"À quoi sert un fuseau ?",
-["Spinning fibres into yarn", "Cutting stone", "Writing on clay", "Dyeing leather"],
-["À filer les fibres pour produire du fil", "À tailler la pierre", "À écrire sur l’argile", "À teindre le cuir"],
-0,
-"A spindle is a tool used to twist fibres into yarn.",
-"Le fuseau est un outil utilisé pour tordre les fibres et produire du fil."
-),
+    Q(
+        "Which statement about cuneiform is correct?",
+        "Quelle affirmation concernant l’écriture cunéiforme est correcte ?",
+        ["It was used to write several ancient languages", "It was used only for Sumerian", "It was an alphabet with 26 letters", "It was invented in ancient Rome"],
+        ["Elle servait à écrire plusieurs langues anciennes", "Elle servait uniquement à écrire le sumérien", "C’était un alphabet de 26 lettres", "Elle fut inventée dans la Rome antique"],
+        0,
+        "Cuneiform was adapted to write several languages, including Sumerian and Akkadian, and later languages such as Hittite.",
+        "L’écriture cunéiforme fut adaptée à plusieurs langues, notamment le sumérien et l’akkadien, puis des langues comme le hittite."
+    ),
 
-(
-"What is a spindle whorl?",
-"Qu’est-ce qu’un fusaïole ?",
-["A weighted component fitted to a spindle", "A type of loom", "A woven textile", "A clay tablet"],
-["Un élément lesté placé sur un fuseau", "Un type de métier à tisser", "Un textile tissé", "Une tablette d’argile"],
-0,
-"A spindle whorl adds weight and helps maintain the rotation of a spindle.",
-"Une fusaïole ajoute du poids et aide à maintenir la rotation du fuseau."
-),
+    Q(
+        "What is a determinative in cuneiform writing?",
+        "Qu’est-ce qu’un déterminatif dans l’écriture cunéiforme ?",
+        ["A sign that helps classify the meaning of a word", "A punctuation mark used at the end of every sentence", "A number representing a king", "A type of clay tablet"],
+        ["Un signe qui aide à classer le sens d’un mot", "Un signe de ponctuation placé à la fin de chaque phrase", "Un nombre représentant un roi", "Un type de tablette d’argile"],
+        0,
+        "A determinative is a sign used to indicate the semantic category of a word, often without being pronounced.",
+        "Un déterminatif est un signe qui indique la catégorie sémantique d’un mot, sans être nécessairement prononcé."
+    ),
 
-(
-"What does the term 'textile archaeology' primarily investigate?",
-"Que cherche principalement à étudier l’archéologie du textile ?",
-["Evidence of ancient fibres, yarns, fabrics and textile production", "Only ancient architecture", "Only royal inscriptions", "Modern fashion trends"],
-["Les traces de fibres, fils, tissus et techniques textiles anciens", "Uniquement l’architecture ancienne", "Uniquement les inscriptions royales", "Les tendances de la mode actuelle"],
-0,
-"Textile archaeology studies material evidence and technologies related to the production and use of textiles in the past.",
-"L’archéologie du textile étudie les traces matérielles et les techniques liées à la production et à l’utilisation des textiles dans le passé."
-),
+    Q(
+        "What is the main purpose of a museum catalogue for archaeological objects?",
+        "Quel est l’objectif principal d’un catalogue de musée consacré aux objets archéologiques ?",
+        ["To document and describe objects systematically", "To replace the objects", "To provide entertainment only", "To establish the age of every object without research"],
+        ["Documenter et décrire les objets de manière systématique", "Remplacer les objets", "Fournir uniquement un divertissement", "Déterminer l’âge de chaque objet sans recherche"],
+        0,
+        "A catalogue records information such as an object's description, materials, dimensions, provenance and interpretation.",
+        "Un catalogue rassemble des informations telles que la description, les matériaux, les dimensions, la provenance et l’interprétation d’un objet."
+    ),
 
-(
-"Why are textile impressions sometimes found on ancient pottery?",
-"Pourquoi trouve-t-on parfois des empreintes textiles sur des poteries anciennes ?",
-["Wet clay can preserve impressions from woven materials", "Textiles were always painted on pottery", "Pottery was made from cloth", "Textile impressions are modern decorations"],
-["L’argile humide peut conserver les empreintes de matériaux tissés", "Les textiles étaient toujours peints sur les poteries", "La poterie était fabriquée en tissu", "Les empreintes textiles sont des décorations modernes"],
-0,
-"Textile impressions can survive when fabric or cordage is pressed into wet clay before firing.",
-"Les empreintes textiles peuvent être conservées lorsqu’un tissu ou une corde est pressé dans l’argile humide avant la cuisson."
-),
+    Q(
+        "Why is archaeological context important when studying an ancient object?",
+        "Pourquoi le contexte archéologique est-il important pour étudier un objet ancien ?",
+        ["It helps interpret the object's date, use and significance", "It always reveals the object's owner's name", "It makes scientific analysis unnecessary", "It proves that every object was religious"],
+        ["Il aide à interpréter la date, l’usage et l’importance de l’objet", "Il révèle toujours le nom du propriétaire de l’objet", "Il rend toute analyse scientifique inutile", "Il prouve que chaque objet était religieux"],
+        0,
+        "The object's location and association with other finds can provide essential evidence for interpretation.",
+        "L’emplacement de l’objet et ses associations avec d’autres découvertes peuvent fournir des éléments essentiels à son interprétation."
+    ),
 
-(
-"What is the main purpose of a textile dye?",
-"Quel est le rôle principal d’un colorant textile ?",
-["To impart colour to fibres or fabrics", "To spin fibres", "To weave threads", "To harden clay"],
-["Donner une couleur aux fibres ou aux tissus", "Filer les fibres", "Tisser les fils", "Durcir l’argile"],
-0,
-"Dyes are substances used to impart colour to textile materials.",
-"Les colorants sont des substances utilisées pour donner une couleur aux matériaux textiles."
-),
-
-(
-"Which of the following is an example of a plant-based textile fibre?",
-"Lequel des éléments suivants est un exemple de fibre textile d’origine végétale ?",
-["Flax", "Wool", "Silk", "Leather"],
-["Le lin", "La laine", "La soie", "Le cuir"],
-0,
-"Flax is a plant fibre; wool and silk are animal fibres.",
-"Le lin est une fibre végétale ; la laine et la soie sont des fibres animales."
-)
+    Q(
+        "Which modern country contains most of the territory of ancient Sumer?",
+        "Quel pays actuel comprend la majeure partie du territoire de l’ancien Sumer ?",
+        ["Iraq", "Egypt", "Turkey", "Greece"],
+        ["L’Irak", "L’Égypte", "La Turquie", "La Grèce"],
+        0,
+        "The main cities of ancient Sumer were located in what is now southern Iraq.",
+        "Les principales villes de l’ancien Sumer se trouvaient dans ce qui est aujourd’hui le sud de l’Irak."
+    )
 
 ]
 
@@ -641,58 +650,46 @@ questions = [
 # VALIDATION
 # ---------------------------------------------------------
 
-assert len(questions) == 50, f"Expected 50 questions, found {len(questions)}"
+assert len(questions) == 50, (
+    f"Expected exactly 50 questions, but found {len(questions)}. "
+    "Please check the questions list."
+)
 
-for question in questions:
-    assert len(question[2]) == 4
-    assert len(question[3]) == 4
-    assert 0 <= question[4] < 4
+for number, question in enumerate(questions, start=1):
+    assert len(question["options_en"]) == 4, (
+        f"Question {number} must have exactly 4 English options."
+    )
+    assert len(question["options_fr"]) == 4, (
+        f"Question {number} must have exactly 4 French options."
+    )
+    assert 0 <= question["answer"] < 4, (
+        f"Question {number} has an invalid correct-answer index."
+    )
 
 # ---------------------------------------------------------
-# SIDEBAR
+# APPLICATION INTERFACE
 # ---------------------------------------------------------
 
-st.sidebar.markdown("## 𒀭 Sumerian Quiz")
+st.sidebar.title("⚙️ Settings")
 
 language = st.sidebar.radio(
-    translations["English"]["language"] + " / " +
-    translations["Français"]["language"],
+    "Choose your language / Choisissez votre langue",
     ["English", "Français"],
     index=0
 )
 
-t = translations[language]
-
-st.sidebar.divider()
-st.sidebar.markdown(f"**{t['creator']}**")
-
-st.sidebar.markdown("---")
-st.sidebar.markdown(f"### {t['sources']}")
-st.sidebar.write(t["source_intro"])
-
-st.sidebar.markdown(
-    "[Oracc Sign List](https://oracc.museum.upenn.edu/osl/)"
-)
-st.sidebar.markdown(
-    "[Electronic Pennsylvania Sumerian Dictionary](https://oracc.museum.upenn.edu/epsd2/)"
-)
-st.sidebar.markdown(
-    "[Unicode Cuneiform Chart](https://unicode.org/charts/PDF/U12000.pdf)"
-)
-st.sidebar.markdown(
-    "[Unicode Cuneiform Numbers Chart](https://unicode.org/charts/PDF/U12400.pdf)"
-)
-
-# ---------------------------------------------------------
-# MAIN PAGE
-# ---------------------------------------------------------
+t = LANGUAGES[language]
+lang = "en" if language == "English" else "fr"
 
 st.title(t["title"])
 st.subheader(t["subtitle"])
+
 st.markdown("---")
+
 st.info(t["instructions"])
 
-st.write(f"**{t['all_questions']}:** {len(questions)}")
+# Progress display
+st.write(f"**{len(questions)} questions**")
 
 # ---------------------------------------------------------
 # QUIZ FORM
@@ -700,25 +697,28 @@ st.write(f"**{t['all_questions']}:** {len(questions)}")
 
 with st.form("sumerian_quiz_form"):
 
-    answers = []
+    user_answers = []
 
-    for i, q in enumerate(questions):
+    for i, question in enumerate(questions):
 
-        question_text = q[0] if language == "English" else q[1]
-        options = q[2] if language == "English" else q[3]
+        question_text = question[lang]
+        options = (
+            question["options_en"]
+            if lang == "en"
+            else question["options_fr"]
+        )
 
-        st.markdown(f"### {t['question']} {i + 1}")
-        st.write(question_text)
+        st.markdown(f"### {i + 1}. {question_text}")
 
-        answer = st.radio(
-            label=f"Answer {i + 1}",
+        selected_answer = st.radio(
+            label=f"{t['question']} {i + 1}",
             options=options,
-            key=f"question_{i}",
             index=None,
+            key=f"question_{i}",
             label_visibility="collapsed"
         )
 
-        answers.append(answer)
+        user_answers.append(selected_answer)
 
         st.markdown("---")
 
@@ -735,95 +735,139 @@ if submitted:
 
     score = 0
 
-    for i, q in enumerate(questions):
+    for i, selected in enumerate(user_answers):
+        options = (
+            questions[i]["options_en"]
+            if lang == "en"
+            else questions[i]["options_fr"]
+        )
 
-        options = q[2] if language == "English" else q[3]
-        correct_index = q[4]
-        correct_answer = options[correct_index]
+        correct_option = options[questions[i]["answer"]]
 
-        if answers[i] == correct_answer:
+        if selected == correct_option:
             score += 1
 
-    total_questions = len(questions)
-    percentage = (score / total_questions) * 100
+    percentage = (score / len(questions)) * 100
 
     st.markdown("---")
-    st.header(t["result"])
+    st.header(t["score"])
 
-    col1, col2, col3 = st.columns(3)
+    st.metric(
+        label=t["score"],
+        value=f"{score} / {len(questions)}",
+        delta=f"{percentage:.1f}%"
+    )
 
-    with col1:
-        st.metric(
-            t["score"],
-            f"{score}/{total_questions}"
-        )
+    st.progress(score / len(questions))
 
-    with col2:
-        st.metric(
-            t["percentage"],
-            f"{percentage:.1f}%"
-        )
-
-    with col3:
-        st.metric(
-            t["all_questions"],
-            total_questions
-        )
-
-    st.progress(percentage / 100)
-
-    if percentage >= 90:
+    # Feedback according to score
+    if percentage >= 85:
         st.success(t["excellent"])
-    elif percentage >= 70:
-        st.success(t["very_good"])
-    elif percentage >= 50:
-        st.warning(t["good"])
+    elif percentage >= 65:
+        st.success(t["good"])
+    elif percentage >= 40:
+        st.warning(t["average"])
     else:
-        st.error(t["keep_learning"])
+        st.info(t["beginner"])
 
-    # Detailed answer review
+    unanswered = sum(answer is None for answer in user_answers)
+
+    if unanswered == 0:
+        st.write(t["complete"])
+    else:
+        st.warning(
+            f"{t['incomplete']} "
+            f"({unanswered} unanswered)"
+        )
+
+    # -----------------------------------------------------
+    # ANSWER REVIEW
+    # -----------------------------------------------------
+
     st.markdown("---")
-    st.header("Answer Review" if language == "English" else "Correction des réponses")
+    st.header(t["review"])
 
-    for i, q in enumerate(questions):
+    for i, question in enumerate(questions):
 
-        question_text = q[0] if language == "English" else q[1]
-        options = q[2] if language == "English" else q[3]
-        explanation = q[5] if language == "English" else q[6]
+        options = (
+            question["options_en"]
+            if lang == "en"
+            else question["options_fr"]
+        )
 
-        correct_answer = options[q[4]]
-        user_answer = answers[i]
+        correct_option = options[question["answer"]]
+        selected = user_answers[i]
 
-        st.markdown(f"### {t['question']} {i + 1}")
-        st.write(question_text)
+        explanation = (
+            question["explanation_en"]
+            if lang == "en"
+            else question["explanation_fr"]
+        )
 
-        if user_answer is None:
-            st.warning(
-                f"{t['your_answer']}: {t['not_answered']}"
-            )
-        else:
-            st.write(f"**{t['your_answer']}:** {user_answer}")
+        question_text = question[lang]
 
-        if user_answer == correct_answer:
-            st.success(f"{t['correct']}: {correct_answer}")
-        else:
-            st.error(f"{t['correct']}: {correct_answer}")
+        with st.expander(f"{i + 1}. {question_text}"):
 
-        st.info(f"**{t['explanation']}:** {explanation}")
+            st.write(f"**{t['your_answer']}:**")
 
-        st.markdown("---")
+            if selected is None:
+                st.write(f"— {t['not_answered']}")
+            else:
+                st.write(selected)
+
+            st.write(f"**{t['correct_answer']}:** {correct_option}")
+
+            if selected == correct_option:
+                st.success("✓ Correct!" if lang == "en" else "✓ Correct !")
+            else:
+                st.error("✗ Incorrect" if lang == "en" else "✗ Incorrect")
+
+            st.write(f"**{t['explanation']}:**")
+            st.write(explanation)
+
+    # -----------------------------------------------------
+    # RESTART BUTTON
+    # -----------------------------------------------------
 
     if st.button(t["restart"], use_container_width=True):
         st.rerun()
+
+# ---------------------------------------------------------
+# SIDEBAR REFERENCES
+# ---------------------------------------------------------
+
+st.sidebar.markdown("---")
+st.sidebar.subheader(t["references"])
+st.sidebar.write(t["references_note"])
+
+st.sidebar.markdown(
+    "- [ORACC Sign List](https://oracc.museum.upenn.edu/osl/)"
+)
+
+st.sidebar.markdown(
+    "- [Electronic Pennsylvania Sumerian Dictionary (ePSD2)]"
+    "(https://oracc.museum.upenn.edu/epsd2/)"
+)
+
+st.sidebar.markdown(
+    "- [Unicode Cuneiform Chart](https://unicode.org/charts/PDF/U12000.pdf)"
+)
+
+st.sidebar.markdown(
+    "- [Unicode Cuneiform Numbers Chart]"
+    "(https://unicode.org/charts/PDF/U12400.pdf)"
+)
 
 # ---------------------------------------------------------
 # FOOTER
 # ---------------------------------------------------------
 
 st.markdown("---")
-st.caption(t["footer"])
+
 st.markdown(
-    f"<div style='text-align:center; color:gray;'>"
-    f"<b>{t['creator']}</b></div>",
+    f"<div style='text-align: center; color: gray;'>"
+    f"{t['creator']}<br>"
+    f"Sumerian Knowledge Quiz – 50 Questions"
+    f"</div>",
     unsafe_allow_html=True
 )
